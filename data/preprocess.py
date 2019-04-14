@@ -26,9 +26,7 @@ def load_video(filename):
     vid = imageio.get_reader(filename, 'ffmpeg')
     frames = []
     for i in range(0, num_frames):
-        image = vid.get_data(i)
-        print(image.dtype)
-        print(image.shape)
+        image = vid.get_data(i)             # uint8 256 x 256 x 3
         image = functional.to_tensor(image)
         frames.append(image)
     return frames

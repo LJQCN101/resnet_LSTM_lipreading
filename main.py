@@ -6,7 +6,7 @@ import torch, toml, os
 from models import LipRead
 from training import Trainer
 from validation import Validator
-from xinshuo_miscellaneous import get_timestring, print_log
+from xinshuo_miscellaneous import get_timestring, print_log, is_path_exists
 from xinshuo_io import mkdir_if_missing
 
 print("Loading options...")
@@ -23,6 +23,7 @@ model = LipRead(options)
 print_log('loading model', log=options["general"]["logfile"])
 if options["general"]["loadpretrainedmodel"]: 
 	print_log('loading the pretrained model at %s' % options["general"]["pretrainedmodelpath"], log=options["general"]["logfile"])
+	assert is_path_exists(options["general"]["pretrainedmodelpath"]), 'the pretrained model does not exists'
 	model.load_state_dict(torch.load(options["general"]["pretrainedmodelpath"]))		#Create the model.
 if options["general"]["usecudnn"]: model = model.cuda(options["general"]["gpuid"])		#Move the model to the GPU.
 

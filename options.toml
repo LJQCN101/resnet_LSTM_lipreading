@@ -4,22 +4,23 @@ title = "TOML Example"
 usecudnn = true
 usecudnnbenchmark = true
 gpuid = 0
-loadpretrainedmodel = true
-pretrainedmodelpath = "/file3/xinshuo/data/models/resnet_LSTM_lipreading/trained_model_20181129_05h51m12s/trained_model_epoch003.pt"
+loadpretrainedmodel = false
+#pretrainedmodelpath = "/file3/xinshuo/data/models/resnet_LSTM_lipreading/trained_model_20181129_05h51m12s/trained_model_epoch003.pt"
+pretrainedmodelpath = "/media/xinshuo/Data/models/resnet_LSTM_lipreading/trained_model_20181129_05h51m24s/trained_model_epoch001.pt"
 savemodel = true
-#modelsavedir = "/media/xinshuo/Data/models/resnet_LSTM_lipreading"
-modelsavedir = "/file3/xinshuo/data/models/resnet_LSTM_lipreading"
+modelsavedir = "/media/xinshuo/Data/models/resnet_LSTM_lipreading"
+#modelsavedir = "/file3/xinshuo/data/models/resnet_LSTM_lipreading"
 
 #logfile = ""
-#dataset = "/media/xinshuo/Data/Datasets/LRD/LRW/lipread_mp4"
-dataset = "/file3/xinshuo/data/datasets/LRD/LRW/lipread_mp4"
+dataset = "/media/xinshuo/Data/Datasets/LRD/LRW/lipread_mp4"
+#dataset = "/file3/xinshuo/data/datasets/LRD/LRW/lipread_mp4"
 
 num_frames = 29
 
 [input]
-batchsize = 32
+batchsize = 25
 #batchsize = 2
-numworkers = 32
+numworkers = 25
 #numworkers = 2
 
 [model]
