@@ -53,13 +53,13 @@ class Trainer():
         print_log("Starting training...", log=self.log_file)
         for i_batch, (sample_batched, _) in enumerate(self.trainingdataloader):
             optimizer.zero_grad()
-            input = Variable(sample_batched['temporalvolume'])
+            inputs = Variable(sample_batched['temporalvolume'])
             labels = Variable(sample_batched['label'])
             if(self.usecudnn):
-                input = input.cuda(self.gpuid)
+                inputs = inputs.cuda(self.gpuid)
                 labels = labels.cuda(self.gpuid)
 
-            outputs = model(input)
+            outputs = model(inputs)
             loss = criterion(outputs, labels.squeeze(1))
             print_log('Training: {}, Epoch: {}, loss is {}'.format(self.time_str, epoch, loss.item()), log=self.log_file)
             loss.backward()

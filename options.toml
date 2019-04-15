@@ -18,9 +18,9 @@ dataset = "/media/xinshuo/Data/Datasets/LRD/LRW/lipread_mp4"
 num_frames = 29
 
 [input]
-batchsize = 25
+batchsize = 36
 #batchsize = 2
-numworkers = 25
+numworkers = 8
 #numworkers = 2
 
 [model]
@@ -33,7 +33,7 @@ numlstms = 2
 
 [training]
 train = true
-startepoch = 4
+startepoch = 0
 endepoch = 15
 statsfrequency = 10
 learningrate = 0.003
@@ -42,7 +42,7 @@ weightdecay = 0.0003
 shuffle = true
 
 [validation]
-validate = false
+validate = true
 saveaccuracy = true
 
 [testing]
