@@ -22,7 +22,7 @@ from xinshuo_io import fileparts
 
 class Trainer():
     def __init__(self, options):
-        augment = False
+        augment = True
         self.batchsize = options["input"]["batchsize"]
         self.trainingdataset = LipreadingDataset(options["general"]["dataset"], "train", augment=augment)
         self.trainingdataloader = DataLoader(self.trainingdataset, batch_size=self.batchsize,
