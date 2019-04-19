@@ -34,8 +34,8 @@ numlstms = 2
 [training]
 train = true
 startepoch = 0
-endepoch = 15
-statsfrequency = 10
+endepoch = 30
+statsfrequency = 2
 learningrate = 0.003
 momentum = 0.9
 weightdecay = 0.0003
@@ -43,8 +43,8 @@ shuffle = true
 
 [validation]
 validate = true
-saveaccuracy = true
+#saveaccuracy = true
 
 [testing]
 test = true
-saveaccuracy = true
+#saveaccuracy = true

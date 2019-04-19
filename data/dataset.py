@@ -23,7 +23,7 @@ class LipreadingDataset(Dataset):
 
         return labels, completeList
 
-    def __init__(self, directory, set, augment=False):
+    def __init__(self, directory, set, augment=True):
         self.label_list, self.file_list = self.build_file_list(directory, set)
         self.augment = augment
 
