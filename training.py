@@ -43,6 +43,7 @@ class Trainer():
         self.model_type = options["general"]["model_type"]
         print_log('loaded training dataset with %d data' % len(self.trainingdataset), log=options["general"]["logfile"])
         if augment: print_log('using augmentation', log=options["general"]["logfile"])
+        else: print_log('no data augmentation', log=options["general"]["logfile"])
 
     def learningRate(self, epoch):
         decay = math.floor((epoch - 1) / 5)
