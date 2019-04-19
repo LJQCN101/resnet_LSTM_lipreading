@@ -22,8 +22,9 @@ from xinshuo_io import fileparts
 
 class Trainer():
     def __init__(self, options):
+        augment = False
         self.batchsize = options["input"]["batchsize"]
-        self.trainingdataset = LipreadingDataset(options["general"]["dataset"], "train", augment=True)
+        self.trainingdataset = LipreadingDataset(options["general"]["dataset"], "train", augment=augment)
         self.trainingdataloader = DataLoader(self.trainingdataset, batch_size=self.batchsize,
             shuffle=options["training"]["shuffle"], num_workers=options["input"]["numworkers"], drop_last=True)
         self.usecudnn = options["general"]["usecudnn"]
@@ -40,6 +41,7 @@ class Trainer():
         self.num_samples = int(len(self.trainingdataset))
         self.num_frames = options["general"]["num_frames"]
         print_log('loaded training dataset with %d data' % len(self.trainingdataset), log=options["general"]["logfile"])
+        if augment: print_log('using augmentation', log=options["general"]["logfile"])
 
     def learningRate(self, epoch):
         decay = math.floor((epoch - 1) / 5)
@@ -79,9 +81,9 @@ class Trainer():
 
 
 
-            # ave_loss_per_batch = loss.item() / float(self.num_frames)           # TODO only true for lstm model
-            ave_loss_per_batch = loss.item()
-            
+            ave_loss_per_batch = loss.item() / float(self.num_frames)           # TODO only true for lstm model
+            # ave_loss_per_batch = loss.item()
+
             sum_loss_so_far += ave_loss_per_batch * inputs.size(0)
             corrects_per_batch, predict_index_list = validator_function(outputs, labels)
             corrects_so_far += corrects_per_batch

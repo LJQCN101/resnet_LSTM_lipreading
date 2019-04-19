@@ -9,7 +9,8 @@ from xinshuo_visualization import save_image
 from xinshuo_images import image_bgr2rgb
 from xinshuo_miscellaneous import is_path_exists
 
-crop_size = 112
+frist_crop_size = 122
+final_crop_size = 112
 num_frames = 29
 
 def load_video(filename):
@@ -27,6 +28,9 @@ def load_video(filename):
     frames = []
     for i in range(0, num_frames):
         image = vid.get_data(i)             # uint8 256 x 256 x 3
+        # image = image[116:212, 80:176, :]            # 96 x 96
+        # image = image[108:220, 72:184, :]            # 112 x 112
+        image = image[103:225, 67:189, :]            # 122 x 122
         image = functional.to_tensor(image)
         frames.append(image)
     return frames
@@ -67,27 +71,25 @@ def bbc(vidframes, augmentation=False):
         FloatTensor: The video as a temporal volume, represented as a 5D tensor
             (batch, channel, time, width, height)"""
 
-    temporalvolume = torch.FloatTensor(1, num_frames, crop_size, crop_size)
-    croptransform = transforms.CenterCrop(crop_size)
+    temporalvolume = torch.FloatTensor(1, num_frames, final_crop_size, final_crop_size)
+    # croptransform = transforms.CenterCrop(crop_size)
     if augmentation:
-        crop = StatefulRandomCrop((crop_size, crop_size), (crop_size, crop_size))
+        crop = StatefulRandomCrop((frist_crop_size, frist_crop_size), (final_crop_size, final_crop_size))
         flip = StatefulRandomHorizontalFlip(0.5)
         croptransform = transforms.Compose([crop, flip])
+    else: croptransform = transforms.CenterCrop(final_crop_size)
 
     for frame_index in range(0, num_frames):
-        # overall_transform1 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale()]) 
-        # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform]) 
         overall_transform = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform,
             transforms.ToTensor(), transforms.Normalize([0.4161, ], [0.1688, ])])
-        # result = transforms.Compose([transforms.ToPILImage(), transforms.CenterCrop((crop_size, crop_size)), croptransform, 
-        # result1 = overall_transform1(vidframes[frame_index])
-        # result2 = overall_transform2(vidframes[frame_index])
         result = overall_transform(vidframes[frame_index])
-        # print(result)
-        # save_image(result1, '/home/xinshuo/test1.jpg')
-        # save_image(result2, '/home/xinshuo/test%d.jpg' % frame_index)
-        # zxc
         temporalvolume[0][frame_index] = result
+
+        # visualization
+        # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale()]) 
+        # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform]) 
+        # result2 = overall_transform2(vidframes[frame_index])
+        # save_image(result2, '/home/xinshuo/test%d.jpg' % frame_index)
 
     # zxc
     return temporalvolume
