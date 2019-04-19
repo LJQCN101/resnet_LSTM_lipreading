@@ -40,6 +40,7 @@ class Trainer():
         self.num_batches = int(len(self.trainingdataset) / self.batchsize)
         self.num_samples = int(len(self.trainingdataset))
         self.num_frames = options["general"]["num_frames"]
+        self.model_type = options["general"]["model_type"]
         print_log('loaded training dataset with %d data' % len(self.trainingdataset), log=options["general"]["logfile"])
         if augment: print_log('using augmentation', log=options["general"]["logfile"])
 
@@ -91,7 +92,7 @@ class Trainer():
 
             if i_batch == 0: since = time.time()
             elif i_batch % self.statsfrequency == 0 or (i_batch == self.num_batches - 1):
-                print_log('train, Epoch: %d, %d/%d (%.f%%), Loss: %.4f, Accu: %.4f, EP: %s, ETA: %s' % (epoch, 
+                print_log('%s, train, Epoch: %d, %d/%d (%.f%%), Loss: %.4f, Accu: %.4f, EP: %s, ETA: %s' % (self.model_type, epoch, 
                     sum_samples_so_far, self.num_samples, 100. * i_batch / (self.num_batches - 1), 
                     ave_loss_per_batch, corrects_per_batch / float(self.batchsize), 
                     convert_secs2time(time.time()-since), 
