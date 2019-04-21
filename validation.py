@@ -49,8 +49,10 @@ class Validator():
 
                 loss = criterion(outputs, labels.squeeze(1))
                 
-                ave_loss_per_batch = loss.item() / float(self.num_frames)
+                # ave_loss_per_batch = loss.item() / float(self.num_frames)
+                ave_loss_per_batch = loss.item() / 7.           # TODO only true for lstm model
                 # ave_loss_per_batch = loss.item() 
+                
                 sum_loss_so_far += ave_loss_per_batch * inputs.size(0)
                 corrects_per_batch, predict_index_list = validator_function(outputs, labels)
                 corrects_so_far += corrects_per_batch

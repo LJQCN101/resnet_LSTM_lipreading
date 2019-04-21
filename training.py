@@ -61,7 +61,8 @@ class Trainer():
             loss.backward()
             optimizer.step()
 
-            ave_loss_per_batch = loss.item() / float(self.num_frames)           # TODO only true for lstm model
+            # ave_loss_per_batch = loss.item() / float(self.num_frames)           # TODO only true for lstm model
+            ave_loss_per_batch = loss.item() / 7.           # TODO only true for lstm model
             # ave_loss_per_batch = loss.item()
 
             sum_loss_so_far += ave_loss_per_batch * inputs.size(0)

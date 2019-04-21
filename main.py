@@ -3,7 +3,7 @@
 
 from __future__ import print_function
 import torch, toml, os
-from models import LipRead, I3D, I3D_BGRU
+from models import LipRead, I3D, I3D_BLSTM
 from training import Trainer
 from validation import Validator
 from utils import plot_loss, plot_accu
@@ -20,7 +20,7 @@ print_log('\n\nsaving to %s' % options["general"]["modelsavedir"], log=options["
 
 print_log('creating the model\n\n', log=options["general"]["logfile"])
 # model = LipRead(options)
-model = I3D_BGRU()
+model = I3D_BLSTM()
 print_log(model, log=options["general"]["logfile"])
 
 

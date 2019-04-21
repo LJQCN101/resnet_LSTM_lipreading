@@ -6,8 +6,29 @@ from torch.nn import ReplicationPad3d
 from torch.autograd import Variable
 from .i3d_utils import Unit3Dpy, Mixed, MaxPool3dTFPadding
 
+class NLLSequenceLoss(nn.Module):
+    """
+    Custom loss function.
+    Returns a loss that is the sum of all losses at each time step.
+    """
+    def __init__(self, num_frames):
+        super(NLLSequenceLoss, self).__init__()
+        self.criterion = nn.NLLLoss()
+        self.num_frames = num_frames
+
+    def forward(self, input, target):
+        loss = 0.0
+        transposed = input.transpose(0, 1).contiguous()
+        for i in range(0, self.num_frames):
+            loss += self.criterion(transposed[i], target)
+
+        return loss
+
 def _validate(modelOutput, labels):
-    maxvalues, maxindices = torch.max(modelOutput.data, 1)
+    # modelOutput               # num_batch x 29 x 500
+    # labels                    # num_batch x 1
+    averageEnergies = torch.sum(modelOutput.data, 1)            # num_batch x 500
+    maxvalues, maxindices = torch.max(averageEnergies, 1)
     count = 0
     for i in range(0, labels.squeeze(1).size(0)):
         if maxindices[i] == labels.squeeze(1)[i]:
@@ -15,24 +36,53 @@ def _validate(modelOutput, labels):
 
     return count, maxindices
 
-class GRU(nn.Module):
+# def _validate(modelOutput, labels):
+#     maxvalues, maxindices = torch.max(modelOutput.data, 1)
+#     count = 0
+#     for i in range(0, labels.squeeze(1).size(0)):
+#         if maxindices[i] == labels.squeeze(1)[i]:
+#             count += 1
+
+#     return count, maxindices
+
+# class GRU(nn.Module):
+#     def __init__(self, input_size, hidden_size, num_layers, num_classes):
+#         super(GRU, self).__init__()
+#         self.hidden_size = hidden_size
+#         self.num_layers = num_layers
+#         self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
+#         self.fc = nn.Linear(hidden_size*2, num_classes)
+
+#     def forward(self, x):
+#         h0 = Variable(torch.zeros(self.num_layers*2, x.size(0), self.hidden_size))
+#         out, _ = self.gru(x, h0)                # batch_size x 7 x 1024
+#         out = self.fc(out)                      # batch_size x 7 x 500
+#         out = torch.mean(out, 1)                # batch_size x 500
+#         return out
+
+class LSTMBackend(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, num_classes):
-        super(GRU, self).__init__()
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        self.gru = nn.GRU(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
-        self.fc = nn.Linear(hidden_size*2, num_classes)
+        super(LSTMBackend, self).__init__()
+        self.Module1 = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
 
-    def forward(self, x):
-        h0 = Variable(torch.zeros(self.num_layers*2, x.size(0), self.hidden_size))
-        out, _ = self.gru(x, h0)                # batch_size x 7 x 1024
-        out = self.fc(out)                      # batch_size x 7 x 500
-        out = torch.mean(out, 1)                # batch_size x 500
-        return out
+        input_dimen = 7
+        self.fc = nn.Linear(hidden_size * 2, num_classes)
+        self.softmax = nn.LogSoftmax(dim=2)
+        self.loss = NLLSequenceLoss(input_dimen)
+        self.validator = _validate
 
-class I3D_BGRU(nn.Module):
+    def forward(self, input):
+        # input: batch_size x 7 x 528
+        temporalDim = 1
+        lstmOutput, _ = self.Module1(input)     # batch_size x 7 x 512
+        output = self.fc(lstmOutput)            # batch_size x 7 x 500
+        output = self.softmax(output)           # batch_size x 7 x 500
+        return output
+
+
+class I3D_BLSTM(nn.Module):
     def __init__(self, inputDim=528, hiddenDim=1024, nClasses=500):
-        super(I3D_BGRU, self).__init__()
+        super(I3D_BLSTM, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
         
@@ -76,7 +126,9 @@ class I3D_BGRU(nn.Module):
         self.hiddenDim = hiddenDim
         self.nClasses = nClasses
         self.nLayers = 2
-        self.gru = GRU(self.inputDim, self.hiddenDim, self.nLayers, self.nClasses)
+
+        self.lstm = LSTMBackend(self.inputDim, self.hiddenDim, self.nLayers, self.nClasses)
+        # self.gru = GRU(self.inputDim, self.hiddenDim, self.nLayers, self.nClasses)
 
         self.validator = _validate
         self._initialize_weights()
@@ -102,11 +154,11 @@ class I3D_BGRU(nn.Module):
         out = out.squeeze(3)                    # batch_size x 528 x 7
 
         out = out.transpose(1, 2)               # batch_size x 7 x 528
-        out = self.gru(out)                     # batch_size x 500   
+        out = self.lstm(out)                     # batch_size x 500   
         return out
 
     def loss(self):
-        return nn.CrossEntropyLoss()
+        return self.lstm.loss
 
     def validator_function(self):
         return self.validator
