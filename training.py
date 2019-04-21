@@ -9,17 +9,6 @@ from torch.utils.data import DataLoader
 from xinshuo_miscellaneous import print_log, convert_secs2time
 from xinshuo_io import fileparts
 
-# def timedelta_string(timedelta):
-    # totalSeconds = int(timedelta.total_seconds())
-    # hours, remainder = divmod(totalSeconds,60*60)
-    # minutes, seconds = divmod(remainder,60)
-    # return "{} hrs, {} mins, {} secs".format(hours, minutes, seconds)
-
-# def output_iteration(i, time, totalitems, log_file):
-    # avgBatchTime = time / (i+1)
-    # estTime = avgBatchTime * (totalitems - i)
-    # print_log("Iteration: {}\nElapsed Time: {} \nEstimated Time Remaining: {}".format(i, timedelta_string(time), timedelta_string(estTime)), log=log_file)
-
 class Trainer():
     def __init__(self, options):
         augment = True
@@ -31,7 +20,6 @@ class Trainer():
         self.statsfrequency = options["training"]["statsfrequency"]
         self.gpuid = options["general"]["gpuid"]
         self.learningrate = options["training"]["learningrate"]
-        # self.modelType = options["training"]["learningrate"]
         self.weightdecay = options["training"]["weightdecay"]
         self.momentum = options["training"]["momentum"]
         self.log_file = options["general"]["logfile"]
@@ -70,18 +58,8 @@ class Trainer():
 
             outputs = model(inputs)
             loss = criterion(outputs, labels.squeeze(1))
-
-            # print_log('Training: {}, Epoch: {}, loss is {}'.format(self.savename, epoch, loss.item()), log=self.log_file)
-            # print_log('Training: {}, Epoch: {}, loss is {}'.format(self.savename, epoch, loss.item()), log=self.log_file)
-            
             loss.backward()
             optimizer.step()
-            # sampleNumber = i_batch * self.batchsize
-            # if sampleNumber % self.statsfrequency == 0:
-            #     currentTime = datetime.now()
-            #     output_iteration(sampleNumber, currentTime - startTime, len(self.trainingdataset), self.log_file)
-
-
 
             ave_loss_per_batch = loss.item() / float(self.num_frames)           # TODO only true for lstm model
             # ave_loss_per_batch = loss.item()
@@ -107,3 +85,5 @@ class Trainer():
 
         print_log("Epoch completed, saving state...", log=self.log_file)
         torch.save(model.state_dict(), os.path.join(self.modelsavedir, 'trained_model_epoch%03d.pt' % epoch))
+
+        return ave_loss_per_epoch, ave_accu_per_epoch

@@ -232,7 +232,7 @@ class ResNetBBC(nn.Module):
         super(ResNetBBC, self).__init__()
         self.inputdims = options["model"]["inputdim"]
         self.batchsize = options["input"]["batchsize"]
-        self.resnetModel = resnet34(False, num_classes=self.inputdims)
+        self.resnetModel = resnet34(pretrained=False, num_classes=self.inputdims)
 
     def forward(self, input):
         transposed = input.transpose(1, 2).contiguous()

@@ -11,8 +11,9 @@ from xinshuo_io import fileparts
 
 class Validator():
     def __init__(self, options):
+        augment = False
         self.batchsize = options["input"]["batchsize"]
-        self.validationdataset = LipreadingDataset(options["general"]["dataset"], "val", False)
+        self.validationdataset = LipreadingDataset(options["general"]["dataset"], "val", augment=augment)
         self.validationdataloader = DataLoader(self.validationdataset, batch_size=self.batchsize, 
             shuffle=False, num_workers=options["input"]["numworkers"], drop_last=True)
         self.usecudnn = options["general"]["usecudnn"]
@@ -78,3 +79,5 @@ class Validator():
         # print_log('saving the accuracy file to %s' % accu_savepath, log=self.log_file)
         # with open(accu_savepath, "a") as outputfile:
         #     outputfile.write("\ncorrect count: {}, total count: {} accuracy: {}".format(correct_so_far, len(self.validationdataset), accuracy))
+
+        return ave_loss_per_epoch, ave_accu_per_epoch

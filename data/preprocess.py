@@ -58,7 +58,7 @@ def load_video_opencv(filename, debug=True):
     # frames = np.array(frames)
     return frames
 
-def bbc(vidframes, augmentation=False):
+def bbc(vidframes, augmentation=True):
     """Preprocesses the specified list of frames by center cropping.
     This will only work correctly on videos that are already centered on the
     mouth region, such as LRITW.

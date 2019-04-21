@@ -20,12 +20,13 @@ class LipRead(nn.Module):
         def freeze(m):
             m.requires_grad=False
 
-        if(options["model"]["type"] == "LSTM-init"):
+        if (options["model"]["type"] == "LSTM-init"):
             self.frontend.apply(freeze)
             self.resnet.apply(freeze)
+            
 
-        self.frontend.apply(freeze)
-        self.resnet.apply(freeze)
+        # self.frontend.apply(freeze)
+        # self.resnet.apply(freeze)
 
         #function to initialize the weights and biases of each module. Matches the
         #classname with a regular expression to determine the type of the module, then

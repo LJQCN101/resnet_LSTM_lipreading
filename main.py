@@ -6,6 +6,7 @@ import torch, toml, os
 from models import LipRead, I3D
 from training import Trainer
 from validation import Validator
+from utils import plot_loss, plot_accu
 from xinshuo_miscellaneous import get_timestring, print_log, is_path_exists
 from xinshuo_io import mkdir_if_missing
 
@@ -35,14 +36,22 @@ if options["general"]["usecudnn"]: model = model.cuda(options["general"]["gpuid"
 
 print_log('loading data', log=options["general"]["logfile"])
 if options["training"]["train"]: trainer = Trainer(options)
-if options["validation"]["validate"]: 
-	validator = Validator(options)
-	validator.epoch(model, epoch=0)
+if options["validation"]["validate"]: validator = Validator(options)
+	# validator.epoch(model, epoch=0)
 
+loss_history_train, loss_history_val = [], []
+accu_history_train, accu_history_val = [], []
 if options["training"]["train"]:
 	for epoch in range(options["training"]["startepoch"], options["training"]["endepoch"]):
-		trainer.epoch(model, epoch)
-		if options["validation"]["validate"]: validator.epoch(model, epoch)
+		loss_train, accu_train = trainer.epoch(model, epoch)
+		if options["validation"]["validate"]: 
+			loss_val, accu_val = validator.epoch(model, epoch)
+
+		loss_history_train.append([loss_train]); loss_history_val.append([loss_val])
+		accu_history_train.append([accu_train]); accu_history_val.append([accu_val])
+		plot_loss(loss_history_train, loss_history_val, save_dir=options["general"]["modelsavedir"])
+		plot_accu(accu_history_train, accu_history_val, save_dir=options["general"]["modelsavedir"])
+
 	# if options["testing"]["test"]:
 	# 	tester = Tester(options)
 	# 	tester.epoch(model)
