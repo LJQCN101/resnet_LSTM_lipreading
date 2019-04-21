@@ -3,7 +3,7 @@
 
 from __future__ import print_function
 import torch, toml, os
-from models import LipRead, I3D
+from models import LipRead, I3D, I3D_BGRU
 from training import Trainer
 from validation import Validator
 from utils import plot_loss, plot_accu
@@ -19,8 +19,8 @@ print_log(options, log=options["general"]["logfile"])
 print_log('\n\nsaving to %s' % options["general"]["modelsavedir"], log=options["general"]["logfile"])
 
 print_log('creating the model\n\n', log=options["general"]["logfile"])
-model = LipRead(options)
-# model = I3D()
+# model = LipRead(options)
+model = I3D_BGRU()
 print_log(model, log=options["general"]["logfile"])
 
 
@@ -39,9 +39,9 @@ if options["training"]["train"]: trainer = Trainer(options)
 if options["validation"]["validate"]: validator = Validator(options)
 	# validator.epoch(model, epoch=0)
 
-loss_history_train, loss_history_val = [], []
-accu_history_train, accu_history_val = [], []
 if options["training"]["train"]:
+	loss_history_train, loss_history_val = [], []
+	accu_history_train, accu_history_val = [], []
 	for epoch in range(options["training"]["startepoch"], options["training"]["endepoch"]):
 		loss_train, accu_train = trainer.epoch(model, epoch)
 		if options["validation"]["validate"]: 

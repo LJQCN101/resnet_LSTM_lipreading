@@ -23,7 +23,7 @@ class LipRead(nn.Module):
         if (options["model"]["type"] == "LSTM-init"):
             self.frontend.apply(freeze)
             self.resnet.apply(freeze)
-            
+
 
         # self.frontend.apply(freeze)
         # self.resnet.apply(freeze)
@@ -45,13 +45,23 @@ class LipRead(nn.Module):
         self.apply(weights_init)
 
     def forward(self, input):
+        # inputs:       36 x 1 x 29 x 112 x 112
+
         if self.type == "temp-conv":
-            output = self.backend(self.resnet(self.frontend(input)))
+            out = self.frontend(input)
+            out = self.resnet(out)
+            out = self.backend(out)
 
         if self.type == "LSTM" or self.type == "LSTM-init":
-            output = self.lstm(self.resnet(self.frontend(input)))
+            out = self.frontend(input)          # 36 x 64 x 29 x 28 x 28
+            # print(out.size())
+            out = self.resnet(out)              # 36 x 29 x 256
+            # print(out.size())
+            out = self.lstm(out)                # 36 x 29 x 500
+            # print(out.size())
+            # zxc
 
-        return output
+        return out
 
     def loss(self):
         if(self.type == "temp-conv"):
