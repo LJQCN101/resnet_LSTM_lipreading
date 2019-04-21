@@ -20,7 +20,7 @@ class I3D(torch.nn.Module):
         super(I3D, self).__init__()
         self.name = name
         self.num_classes = num_classes
-        in_channels = 1
+        in_channels = 3
 
         # 1st conv-pool
         self.conv3d_1a_7x7 = Unit3Dpy(out_channels=64, in_channels=in_channels, kernel_size=(7, 7, 7), stride=(2, 2, 2), padding='SAME')

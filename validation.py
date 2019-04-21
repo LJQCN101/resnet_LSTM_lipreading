@@ -50,9 +50,9 @@ class Validator():
                 loss = criterion(outputs, labels.squeeze(1))
                 
                 # ave_loss_per_batch = loss.item() / float(self.num_frames)
-                ave_loss_per_batch = loss.item() / 7.           # TODO only true for lstm model
-                # ave_loss_per_batch = loss.item() 
-                
+                # ave_loss_per_batch = loss.item() / 7.           # TODO only true for lstm model
+                ave_loss_per_batch = loss.item() 
+
                 sum_loss_so_far += ave_loss_per_batch * inputs.size(0)
                 corrects_per_batch, predict_index_list = validator_function(outputs, labels)
                 corrects_so_far += corrects_per_batch
@@ -69,17 +69,8 @@ class Validator():
                 print_log('val, Epoch: %d, %d/%d (%.f%%), Loss: %.4f, Accu: %.4f' % (epoch, 
                     sum_samples_so_far, self.num_samples, 100. * i_batch / (self.num_batches - 1), 
                     ave_loss_per_batch, corrects_per_batch / float(self.batchsize)), log=self.log_file)
-                    # , self.batchsize*(i_batch+1)), 
-                
 
         ave_loss_per_epoch = sum_loss_so_far / sum_samples_so_far
         ave_accu_per_epoch = corrects_so_far / sum_samples_so_far           # debug: to test the number is the same
         print_log('val, Epoch: {}, Average Loss: {:.4f}, Average Accuracy: {:.4f}'.format(epoch, ave_loss_per_epoch, ave_accu_per_epoch)+'\n', log=self.log_file)
-
-        # accuracy = correct_so_far / len(self.validationdataset)
-        # accu_savepath = os.path.join(self.savedir, 'accuracy_epoch%03d.txt' % epoch)
-        # print_log('saving the accuracy file to %s' % accu_savepath, log=self.log_file)
-        # with open(accu_savepath, "a") as outputfile:
-        #     outputfile.write("\ncorrect count: {}, total count: {} accuracy: {}".format(correct_so_far, len(self.validationdataset), accuracy))
-
         return ave_loss_per_epoch, ave_accu_per_epoch

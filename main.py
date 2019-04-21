@@ -6,7 +6,7 @@ import torch, toml, os
 from models import LipRead, I3D, I3D_BLSTM
 from training import Trainer
 from validation import Validator
-from utils import plot_loss, plot_accu
+from utils import plot_loss, plot_accu, reload_model
 from xinshuo_miscellaneous import get_timestring, print_log, is_path_exists
 from xinshuo_io import mkdir_if_missing
 
@@ -20,7 +20,10 @@ print_log('\n\nsaving to %s' % options["general"]["modelsavedir"], log=options["
 
 print_log('creating the model\n\n', log=options["general"]["logfile"])
 # model = LipRead(options)
-model = I3D_BLSTM()
+# model = I3D_BLSTM()
+model = I3D()
+model.cuda()
+    
 print_log(model, log=options["general"]["logfile"])
 
 
@@ -28,7 +31,9 @@ if options["general"]["loadpretrainedmodel"]:
 	print_log('\n\nloading model', log=options["general"]["logfile"])
 	print_log('loading the pretrained model at %s' % options["general"]["pretrainedmodelpath"], log=options["general"]["logfile"])
 	assert is_path_exists(options["general"]["pretrainedmodelpath"]), 'the pretrained model does not exists'
-	model.load_state_dict(torch.load(options["general"]["pretrainedmodelpath"]))		#Create the model.
+
+	model = reload_model(model, options["general"]["logfile"], options["general"]["pretrainedmodelpath"])      # reload model
+	# model.load_state_dict(torch.load(options["general"]["pretrainedmodelpath"]))		#Create the model.
 else: print_log('\n\ntraining from scratch', log=options["general"]["logfile"])
 if options["general"]["usecudnn"]: model = model.cuda(options["general"]["gpuid"])		#Move the model to the GPU.
 
