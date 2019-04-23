@@ -2,7 +2,6 @@
 # Email: xinshuow@cs.cmu.edu
 
 import torch, matplotlib.pyplot as plt, torch.utils.data, os, numpy as np, math
-import matplotlib as mpl; mpl.use('Agg')
 from xinshuo_miscellaneous import print_log
 from collections import OrderedDict
 from torch.optim.optimizer import Optimizer

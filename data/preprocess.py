@@ -82,9 +82,14 @@ def bbc(vidframes, augmentation=True, channel=3):
     else: croptransform = transforms.CenterCrop(final_crop_size)
 
     for frame_index in range(0, num_frames):
-        overall_transform = transforms.Compose([transforms.ToPILImage(), croptransform,
-        # overall_transform = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform,
-            transforms.ToTensor(), transforms.Normalize([0.4161, ], [0.1688, ])])
+        if channel == 3: 
+            overall_transform = transforms.Compose([transforms.ToPILImage(), croptransform, 
+                transforms.ToTensor(), transforms.Normalize([0.4161, ], [0.1688, ])])
+        elif channel == 1:
+            overall_transform = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform, 
+                transforms.ToTensor(), transforms.Normalize([0.4161, ], [0.1688, ])])
+        else: assert False, 'channel error'
+        
         result = overall_transform(vidframes[frame_index])
 
         # print(result.shape)
@@ -94,7 +99,7 @@ def bbc(vidframes, augmentation=True, channel=3):
             temporalvolume[1][frame_index] = result[1, :, :]
             temporalvolume[2][frame_index] = result[2, :, :]
         else: assert False, 'channel error'
-        
+
         # visualization
         # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale()]) 
         # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform]) 

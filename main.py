@@ -2,7 +2,7 @@
 # Email: xinshuow@cs.cmu.edu
 
 from __future__ import print_function
-import torch, toml, os
+import torch, toml, os, matplotlib; matplotlib.use('Agg')
 from models import LipRead, I3D, I3D_BLSTM
 from training import Trainer
 from validation import Validator
