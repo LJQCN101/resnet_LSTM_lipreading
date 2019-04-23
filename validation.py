@@ -12,8 +12,9 @@ from xinshuo_io import fileparts
 class Validator():
     def __init__(self, options):
         augment = False
+        self.channel = options["general"]["channel"]
         self.batchsize = options["input"]["batchsize"]
-        self.validationdataset = LipreadingDataset(options["general"]["dataset"], "val", augment=augment)
+        self.validationdataset = LipreadingDataset(options["general"]["dataset"], "val", augment=augment, channel=self.channel)
         self.validationdataloader = DataLoader(self.validationdataset, batch_size=self.batchsize, 
             shuffle=False, num_workers=options["input"]["numworkers"], drop_last=True)
         self.usecudnn = options["general"]["usecudnn"]

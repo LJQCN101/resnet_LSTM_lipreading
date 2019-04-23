@@ -12,8 +12,9 @@ from xinshuo_io import fileparts
 class Trainer():
     def __init__(self, options):
         augment = True
+        self.channel = options["general"]["channel"]
         self.batchsize = options["input"]["batchsize"]
-        self.trainingdataset = LipreadingDataset(options["general"]["dataset"], "train", augment=augment)
+        self.trainingdataset = LipreadingDataset(options["general"]["dataset"], "train", augment=augment, channel=self.channel)
         self.trainingdataloader = DataLoader(self.trainingdataset, batch_size=self.batchsize,
             shuffle=options["training"]["shuffle"], num_workers=options["input"]["numworkers"], drop_last=True)
         self.usecudnn = options["general"]["usecudnn"]

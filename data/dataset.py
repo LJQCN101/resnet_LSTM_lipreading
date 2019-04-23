@@ -23,9 +23,10 @@ class LipreadingDataset(Dataset):
 
         return labels, completeList
 
-    def __init__(self, directory, set, augment=True):
+    def __init__(self, directory, set, augment=True, channel=3):
         self.label_list, self.file_list = self.build_file_list(directory, set)
         self.augment = augment
+        self.channel = channel
 
     def __len__(self):
         return len(self.file_list)
@@ -34,6 +35,6 @@ class LipreadingDataset(Dataset):
         #load video into a tensor
         label, filename = self.file_list[idx]
         vidframes = load_video(filename)
-        temporalvolume = bbc(vidframes, self.augment)
+        temporalvolume = bbc(vidframes, self.augment, self.channel)
         sample = {'temporalvolume': temporalvolume, 'label': torch.LongTensor([label])}
         return sample, filename

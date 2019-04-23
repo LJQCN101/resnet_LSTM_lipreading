@@ -12,7 +12,10 @@ from xinshuo_miscellaneous import print_log
 class LipRead(nn.Module):
     def __init__(self, options):
         super(LipRead, self).__init__()
-        self.frontend = ConvFrontend()
+        channel = options['general']['channel']
+        print_log('channel is %d' % channel, log=options["general"]["logfile"])
+
+        self.frontend = ConvFrontend(channel)
         self.resnet = ResNetBBC(options)
         self.backend = ConvBackend(options)
         self.lstm = LSTMBackend(options)
