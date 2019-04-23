@@ -71,7 +71,8 @@ def bbc(vidframes, augmentation=True):
         FloatTensor: The video as a temporal volume, represented as a 5D tensor
             (batch, channel, time, width, height)"""
 
-    temporalvolume = torch.FloatTensor(3, num_frames, final_crop_size, final_crop_size)
+    # temporalvolume = torch.FloatTensor(3, num_frames, final_crop_size, final_crop_size)
+    temporalvolume = torch.FloatTensor(1, num_frames, final_crop_size, final_crop_size)
     # croptransform = transforms.CenterCrop(crop_size)
     if augmentation:
         crop = StatefulRandomCrop((frist_crop_size, frist_crop_size), (final_crop_size, final_crop_size))
@@ -80,15 +81,16 @@ def bbc(vidframes, augmentation=True):
     else: croptransform = transforms.CenterCrop(final_crop_size)
 
     for frame_index in range(0, num_frames):
-        overall_transform = transforms.Compose([transforms.ToPILImage(), croptransform,
-        # overall_transform = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform,
+        # overall_transform = transforms.Compose([transforms.ToPILImage(), croptransform,
+        overall_transform = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale(), croptransform,
             transforms.ToTensor(), transforms.Normalize([0.4161, ], [0.1688, ])])
         result = overall_transform(vidframes[frame_index])
 
         # print(result.shape)
-        temporalvolume[0][frame_index] = result[0, :, :]
-        temporalvolume[1][frame_index] = result[1, :, :]
-        temporalvolume[2][frame_index] = result[2, :, :]
+        temporalvolume[0][frame_index] = result
+        # temporalvolume[0][frame_index] = result[0, :, :]
+        # temporalvolume[1][frame_index] = result[1, :, :]
+        # temporalvolume[2][frame_index] = result[2, :, :]
 
         # visualization
         # overall_transform2 = transforms.Compose([transforms.ToPILImage(), transforms.Grayscale()]) 

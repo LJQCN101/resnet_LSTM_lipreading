@@ -7,6 +7,7 @@ from .ConvFrontend import ConvFrontend
 from .ResNetBBC import ResNetBBC
 from .LSTMBackend import LSTMBackend
 from .ConvBackend import ConvBackend
+from xinshuo_miscellaneous import print_log
 
 class LipRead(nn.Module):
     def __init__(self, options):
@@ -21,8 +22,10 @@ class LipRead(nn.Module):
             m.requires_grad=False
 
         if (options["model"]["type"] == "LSTM-init"):
+            print_log('with freezing frontend', log=options["general"]["logfile"])
             self.frontend.apply(freeze)
             self.resnet.apply(freeze)
+        else: print_log('no freezing', log=options["general"]["logfile"])
 
 
         # self.frontend.apply(freeze)

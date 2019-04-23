@@ -19,9 +19,9 @@ print_log(options, log=options["general"]["logfile"])
 print_log('\n\nsaving to %s' % options["general"]["modelsavedir"], log=options["general"]["logfile"])
 
 print_log('creating the model\n\n', log=options["general"]["logfile"])
-# model = LipRead(options)
+model = LipRead(options)
 # model = I3D_BLSTM()
-model = I3D()
+# model = I3D()
 model.cuda()
     
 print_log(model, log=options["general"]["logfile"])
