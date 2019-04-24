@@ -15,10 +15,15 @@ parser = argparse.ArgumentParser(description='Pytorch Video-only BBC-LRW Example
 parser.add_argument('--path', default='', help='path to model')
 parser.add_argument('--modelname', default='', help='temporalConv, backendGRU, finetuneGRU')
 
-parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
-# parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
-parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
-parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
+
+parser.add_argument('--lr', default=0.0005, type=float, help='initial learning rate')
+parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
+parser.add_argument('--weight_decay', default=0.00005, type=float, help='initial weight decay')
+
+# parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
+# parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
+# parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
+
 
 parser.add_argument('--batch_size', default=36, type=int, help='mini-batch size (default: 36)')
 parser.add_argument('--num_frames', default=29, type=int, help='mini-batch size (default: 36)')
@@ -46,7 +51,7 @@ with open('options.toml', 'r') as optionsFile: options = toml.loads(optionsFile.
 args.save_dir = os.path.join(options["general"]["modelsavedir"], args.modelname + '_' + get_timestring()); mkdir_if_missing(args.save_dir)
 args.dataset = options["general"]["dataset"]
 args.logfile = os.path.join(args.save_dir, 'log.txt'); args.logfile = open(args.logfile, 'w')
-print_log(options, args.logfile)
+# print_log(options, args.logfile)
 print_log(args, args.logfile)
 print_log('\n\nsaving to %s' % args.save_dir, log=args.logfile)
 
