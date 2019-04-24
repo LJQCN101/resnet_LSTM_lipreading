@@ -20,11 +20,6 @@ class C3D_CONV_BLSTM(nn.Module):
         self.lstm = LSTMBackend(input_dims=input_dims, hidden_dims=hidden_dims, 
             num_lstm=num_lstm, num_classes=args.num_classes, num_frames=args.num_frames)
 
-        def freeze(m): m.requires_grad = False
-
-        # self.frontend.apply(freeze)
-        # self.resnet.apply(freeze)
-
         #function to initialize the weights and biases of each module. Matches the
         #classname with a regular expression to determine the type of the module, then
         #initializes the weights for it.

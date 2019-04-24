@@ -63,8 +63,8 @@ model = model.cuda()								# move the model to the GPU.
 
 if args.modelname == 'C3D_CONV_BLSTM_frontfix':
 	print_log('\n\nwith freezing frontend', log=args.logfile)
-	model.frontend.apply(freeze)
-	model.resnet.apply(freeze)
+	model.frontend.requires_grad = False
+	model.resnet.requires_grad = False
 else: print_log('\n\nno freezing', log=args.logfile)
 
 print_log('loading data', log=args.logfile)
