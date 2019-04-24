@@ -19,6 +19,7 @@ class NLLSequenceLoss(nn.Module):
         for i in range(0, self.num_frames):
             loss += self.criterion(transposed[i], target)
 
+        loss /= self.num_frames
         return loss
 
 def _validate(modelOutput, labels):
@@ -34,14 +35,14 @@ def _validate(modelOutput, labels):
     return count, maxindices
 
 class LSTMBackend(nn.Module):
-    def __init__(self, options):
+    def __init__(self, input_dims=256, hidden_dims=256, num_lstm=2, num_classes=500, num_frames=29):
         super(LSTMBackend, self).__init__()
-        self.Module1 = nn.LSTM(input_size=options["model"]["inputdim"], hidden_size=options["model"]["hiddendim"],
-                                num_layers=options["model"]["numlstms"], batch_first=True, bidirectional=True)
+        self.Module1 = nn.LSTM(input_size=input_dims, hidden_size=hidden_dims,
+            num_layers=num_lstm, batch_first=True, bidirectional=True)
 
-        self.fc = nn.Linear(options["model"]["hiddendim"] * 2, options["model"]["numclasses"])
+        self.fc = nn.Linear(hidden_dims * 2, num_classes)
         self.softmax = nn.LogSoftmax(dim=2)
-        self.loss = NLLSequenceLoss(options["general"]["num_frames"])
+        self.loss = NLLSequenceLoss(num_frames)
         self.validator = _validate
 
     def forward(self, input):

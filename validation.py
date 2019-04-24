@@ -10,64 +10,51 @@ from xinshuo_miscellaneous import print_log
 from xinshuo_io import fileparts
 
 class Validator():
-    def __init__(self, options):
+    def __init__(self, args):
         augment = False
-        self.channel = options["general"]["channel"]
-        self.batchsize = options["input"]["batchsize"]
-        self.validationdataset = LipreadingDataset(options["general"]["dataset"], "val", augment=augment, channel=self.channel)
-        self.validationdataloader = DataLoader(self.validationdataset, batch_size=self.batchsize, 
-            shuffle=False, num_workers=options["input"]["numworkers"], drop_last=True)
-        self.usecudnn = options["general"]["usecudnn"]
-        self.statsfrequency = options["training"]["statsfrequency"]
-        self.gpuid = options["general"]["gpuid"]
-        self.log_file = options["general"]["logfile"]
-        self.savedir = options["general"]["modelsavedir"]
+        shuffle = False
+        self.channel = args.channel
+        self.batchsize = args.batch_size
+        self.validationdataset = LipreadingDataset(args.dataset, "val", augment=augment, channel=self.channel)
+        self.validationdataloader = DataLoader(self.validationdataset, batch_size=self.batchsize, shuffle=shuffle, num_workers=args.workers, drop_last=True)
+        # self.usecudnn = options["general"]["usecudnn"]
+        self.statsfrequency = args.statsfrequency
+        # self.gpuid = options["general"]["gpuid"]
+        self.log_file = args.logfile
+        self.savedir = args.save_dir
         self.num_batches = int(len(self.validationdataset) / self.batchsize)
         self.num_samples = int(len(self.validationdataset))
-        self.num_frames = options["general"]["num_frames"]
+        # self.num_frames = args.num_frames
+        self.modelname = args.modelname
         print_log('loaded validation dataset with %d data' % len(self.validationdataset), log=self.log_file)
 
     def epoch(self, model, epoch):
         print_log("Starting validation...", log=self.log_file)
         criterion = model.loss()
-        # print('I am here')
-        # print(criterion)
         validator_function = model.validator_function()
-
         sum_loss_so_far, corrects_so_far, sum_samples_so_far = 0., 0., 0.
         for i_batch, (sample_batched, filename_batch) in enumerate(self.validationdataloader):
             with torch.no_grad():
-                inputs = Variable(sample_batched['temporalvolume'])
-                labels = sample_batched['label']
-                if(self.usecudnn):
-                    inputs = inputs.cuda(self.gpuid)
-                    labels = labels.cuda(self.gpuid)        # num_batch x 1
+                inputs = Variable(sample_batched['temporalvolume']).cuda()
+                labels = sample_batched['label'].cuda()
+                # if(self.usecudnn):
+                    # inputs = inputs.cuda(self.gpuid)
+                    # labels = labels.cuda(self.gpuid)        # num_batch x 1
 
                 outputs = model(inputs)                      # num_batch x 500 for temp-conv         num_batch x 29 x 500               
-                # print(outputs.size())
-                # print(labels.size())
-                # zxc
-
+            
                 loss = criterion(outputs, labels.squeeze(1))
                 
-                ave_loss_per_batch = loss.item() / float(self.num_frames)
+                # ave_loss_per_batch = loss.item() / float(self.num_frames)
                 # ave_loss_per_batch = loss.item() / 7.           # TODO only true for lstm model
-                # ave_loss_per_batch = loss.item() 
+                ave_loss_per_batch = loss.item() 
 
                 sum_loss_so_far += ave_loss_per_batch * inputs.size(0)
                 corrects_per_batch, predict_index_list = validator_function(outputs, labels)
                 corrects_so_far += corrects_per_batch
                 sum_samples_so_far += self.batchsize
 
-                # for batch_index in range(self.batchsize):
-                    # filename_tmp = filename_batch[batch_index]
-                    # _, filename_tmp, _ = fileparts(filename_tmp)
-                    # filename_tmp = filename_tmp.split('_')[0]
-                    # prediction_tmp = self.validationdataset.label_list[predict_index_list[batch_index]]
-                    # print_log('Evaluation: val set, batch index %d/%d, filename: %s, prediction: %s' % (batch_index+1, self.batchsize, filename_tmp, prediction_tmp), log=self.log_file)
-
-
-                print_log('val, Epoch: %d, %d/%d (%.f%%), Loss: %.4f, Accu: %.4f' % (epoch, 
+                print_log('%s, val, Epoch: %d, %d/%d (%.f%%), Loss: %.4f, Accu: %.4f' % (self.modelname, epoch, 
                     sum_samples_so_far, self.num_samples, 100. * i_batch / (self.num_batches - 1), 
                     ave_loss_per_batch, corrects_per_batch / float(self.batchsize)), log=self.log_file)
 

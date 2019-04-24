@@ -228,11 +228,12 @@ def resnet152(pretrained=False, **kwargs):
     return model
 
 class ResNetBBC(nn.Module):
-    def __init__(self, options):
+    def __init__(self, inputdims, batch_size):
         super(ResNetBBC, self).__init__()
-        self.inputdims = options["model"]["inputdim"]
-        self.batchsize = options["input"]["batchsize"]
-        self.resnetModel = resnet34(pretrained=False, num_classes=self.inputdims)
+        # self.inputdims = options["model"]["inputdim"]
+        # self.batchsize = options["input"]["batchsize"]
+        self.resnetModel = resnet34(pretrained=False, num_classes=inputdims)
+        self.batchsize = batch_size
 
     def forward(self, input):
         transposed = input.transpose(1, 2).contiguous()
