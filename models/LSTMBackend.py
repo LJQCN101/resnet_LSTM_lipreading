@@ -19,7 +19,7 @@ class NLLSequenceLoss(nn.Module):
         for i in range(0, self.num_frames):
             loss += self.criterion(transposed[i], target)
 
-        loss /= self.num_frames
+        # loss /= self.num_frames
         return loss
 
 def _validate(modelOutput, labels):

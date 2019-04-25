@@ -16,13 +16,13 @@ parser.add_argument('--path', default='', help='path to model')
 parser.add_argument('--modelname', default='', help='temporalConv, backendGRU, finetuneGRU')
 
 
-parser.add_argument('--lr', default=0.0005, type=float, help='initial learning rate')
-parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
-parser.add_argument('--weight_decay', default=0.00005, type=float, help='initial weight decay')
+# parser.add_argument('--lr', default=0.0005, type=float, help='initial learning rate')
+# parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
+# parser.add_argument('--weight_decay', default=0.00005, type=float, help='initial weight decay')
 
-# parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
-# parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
-# parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
+parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
+parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
+parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
 
 
 parser.add_argument('--batch_size', default=36, type=int, help='mini-batch size (default: 36)')
@@ -41,9 +41,9 @@ parser.add_argument('--vis', action='store_true', help='visualization mode')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 torch.backends.cudnn.benchmark = True   
-random.seed(args.seed)
-torch.manual_seed(args.seed)
-torch.cuda.manual_seed_all(args.seed)
+# random.seed(args.seed)
+# torch.manual_seed(args.seed)
+# torch.cuda.manual_seed_all(args.seed)
 
 
 print("Loading options...")
@@ -68,8 +68,8 @@ model = model.cuda()								# move the model to the GPU.
 
 if args.modelname == 'C3D_CONV_BLSTM_frontfix':
 	print_log('\n\nwith freezing frontend', log=args.logfile)
-	model.frontend.requires_grad = False
-	model.resnet.requires_grad = False
+	for param in model.frontend.parameters(): param.requires_grad = False
+	for param in model.resnet.parameters(): param.requires_grad = False
 else: print_log('\n\nno freezing', log=args.logfile)
 
 print_log('loading data', log=args.logfile)
