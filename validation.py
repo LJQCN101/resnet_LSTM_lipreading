@@ -24,7 +24,7 @@ class Validator():
         self.savedir = args.save_dir
         self.num_batches = int(len(self.validationdataset) / self.batchsize)
         self.num_samples = int(len(self.validationdataset))
-        # self.num_frames = args.num_frames
+        self.num_frames = args.num_frames
         self.modelname = args.modelname
         print_log('loaded validation dataset with %d data' % len(self.validationdataset), log=self.log_file)
 

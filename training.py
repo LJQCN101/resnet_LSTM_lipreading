@@ -28,7 +28,7 @@ class Trainer():
         # _, self.savename, _ = fileparts(self.modelsavedir)
         self.num_batches = int(len(self.trainingdataset) / self.batchsize)
         self.num_samples = int(len(self.trainingdataset))
-        # self.num_frames = args.num_frames
+        self.num_frames = args.num_frames
         self.modelname = args.modelname
         print_log('loaded training dataset with %d data' % len(self.trainingdataset), log=self.log_file)
         if augment: print_log('using augmentation', log=self.log_file)
