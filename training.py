@@ -35,7 +35,7 @@ class Trainer():
         else: print_log('no data augmentation', log=self.log_file)
 
     def learningRate(self, epoch):
-        decay = math.floor((epoch - 1) / 5)         # bugs, should start from 0 instead of 1
+        decay = math.floor(epoch / 5)        
         return self.learningrate * pow(0.5, decay)
 
     def epoch(self, model, epoch):
@@ -43,6 +43,12 @@ class Trainer():
         criterion = model.loss().cuda()
         optimizer = optim.SGD(model.parameters(), lr=self.learningRate(epoch), momentum=self.momentum, weight_decay=self.weightdecay)
         validator_function = model.validator_function()
+
+        # for param_group in optimizer.param_groups:
+            # print(param_group['lr'])
+            # print(param_group['momentum'])
+            # print(param_group['weight_decay'])
+        # zxc
 
         #transfer the model to the GPU.
         # if self.usecudnn: criterion = criterion.cuda()

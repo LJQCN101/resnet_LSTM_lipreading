@@ -16,20 +16,21 @@ parser.add_argument('--path', default='', help='path to model')
 parser.add_argument('--modelname', default='', help='temporalConv, backendGRU, finetuneGRU')
 
 
-# parser.add_argument('--lr', default=0.0005, type=float, help='initial learning rate')
-# parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
-# parser.add_argument('--weight_decay', default=0.00005, type=float, help='initial weight decay')
+parser.add_argument('--lr', default=5e-4, type=float, help='initial learning rate')
+parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
+parser.add_argument('--weight_decay', default=5e-5, type=float, help='initial weight decay')
 
-parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
-parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
-parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
+# parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
+# parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
+# parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
+# parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
 
 
 parser.add_argument('--batch_size', default=36, type=int, help='mini-batch size (default: 36)')
 parser.add_argument('--num_frames', default=29, type=int, help='mini-batch size (default: 36)')
 parser.add_argument('--workers', default=8, type=int, help='number of data loading workers (default: 4)')
 parser.add_argument('--start_epoch', default=0, type=int, help='number of start epoch')
-parser.add_argument('--end_epoch', default=30, type=int, help='number of total epochs')
+parser.add_argument('--end_epoch', default=20, type=int, help='number of total epochs')
 parser.add_argument('--statsfrequency', default=2, help='display interval')
 parser.add_argument('--num_classes', default=500, type=int, help='the number of classes')
 parser.add_argument('--channel', default=1, type=int, help='the number of input channels')
@@ -41,9 +42,10 @@ parser.add_argument('--vis', action='store_true', help='visualization mode')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 torch.backends.cudnn.benchmark = True   
-# random.seed(args.seed)
-# torch.manual_seed(args.seed)
-# torch.cuda.manual_seed_all(args.seed)
+random.seed(args.seed)
+torch.manual_seed(args.seed)
+torch.cuda.manual_seed_all(args.seed)
+np.random.seed(args.manualSeed)
 
 
 print("Loading options...")
@@ -96,3 +98,12 @@ if args.test:
 
 
 args.logfile.close()
+
+
+
+
+# weird momentum and learning rate, 30 51 58 62 64
+# normal momentum and learning rate, 20 48 56 61 64
+
+# channel 3, 13 48 54 61 63 65 69 70 70 71 72
+# channel 1, 30 50 58 61 65 66 70 71 71 72 71 74
