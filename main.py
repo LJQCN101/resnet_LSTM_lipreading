@@ -45,7 +45,7 @@ torch.backends.cudnn.benchmark = True
 random.seed(args.seed)
 torch.manual_seed(args.seed)
 torch.cuda.manual_seed_all(args.seed)
-np.random.seed(args.manualSeed)
+np.random.seed(args.seed)
 
 
 print("Loading options...")
