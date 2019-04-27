@@ -2,7 +2,7 @@
 # Email: xinshuow@cs.cmu.edu
 
 from __future__ import print_function
-import torch, toml, os, argparse, random, matplotlib; matplotlib.use('Agg')
+import torch, toml, numpy as np, os, argparse, random, matplotlib; matplotlib.use('Agg')
 from models import C3D_CONV_BLSTM, C3D_CONV_CONV, I3D, I3D_BLSTM
 from training import Trainer
 from validation import Validator
