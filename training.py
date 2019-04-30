@@ -44,16 +44,17 @@ class Trainer():
         optimizer = optim.SGD(model.parameters(), lr=self.learningRate(epoch), momentum=self.momentum, weight_decay=self.weightdecay)
         validator_function = model.validator_function()
 
-        # for param_group in optimizer.param_groups:
-            # print(param_group['lr'])
-            # print(param_group['momentum'])
-            # print(param_group['weight_decay'])
+        print_log('\n\nlearning args: lr, momentum and weight decay are', log=self.log_file)
+        for param_group in optimizer.param_groups:
+            print_log(param_group['lr'], log=self.log_file)
+            print_log(param_group['momentum'], log=self.log_file)
+            print_log(param_group['weight_decay'], log=self.log_file)
         # zxc
 
         #transfer the model to the GPU.
         # if self.usecudnn: criterion = criterion.cuda()
         startTime = datetime.now()
-        print_log("Starting training...", log=self.log_file)
+        print_log("\n\nStarting training...", log=self.log_file)
         sum_loss_so_far, corrects_so_far, sum_samples_so_far = 0., 0., 0.
         for i_batch, (sample_batched, _) in enumerate(self.trainingdataloader):
             optimizer.zero_grad()

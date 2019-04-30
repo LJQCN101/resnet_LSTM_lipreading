@@ -8,6 +8,7 @@ from training import Trainer
 from validation import Validator
 from utils import plot_loss, plot_accu, reload_model
 from xinshuo_miscellaneous import get_timestring, print_log, is_path_exists
+from xinshuo_miscellaneous.pytorch import prepare_seed
 from xinshuo_io import mkdir_if_missing
 
 
@@ -42,10 +43,7 @@ parser.add_argument('--vis', action='store_true', help='visualization mode')
 parser.add_argument('--seed', type=int, default=0, help='random seed')
 args = parser.parse_args()
 torch.backends.cudnn.benchmark = True   
-random.seed(args.seed)
-torch.manual_seed(args.seed)
-torch.cuda.manual_seed_all(args.seed)
-np.random.seed(args.seed)
+prepare_seed(args.seed)
 
 
 print("Loading options...")
