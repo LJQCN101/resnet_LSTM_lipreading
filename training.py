@@ -53,7 +53,7 @@ class Trainer():
 
         #transfer the model to the GPU.
         # if self.usecudnn: criterion = criterion.cuda()
-        startTime = datetime.now()
+        # startTime = datetime.now()
         print_log("\n\nStarting training...", log=self.log_file)
         sum_loss_so_far, corrects_so_far, sum_samples_so_far = 0., 0., 0.
         for i_batch, (sample_batched, _) in enumerate(self.trainingdataloader):
