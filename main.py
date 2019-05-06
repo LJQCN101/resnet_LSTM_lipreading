@@ -16,16 +16,9 @@ parser = argparse.ArgumentParser(description='Pytorch Video-only BBC-LRW Example
 parser.add_argument('--path', default='', help='path to model')
 parser.add_argument('--modelname', default='', help='temporalConv, backendGRU, finetuneGRU')
 
-
 parser.add_argument('--lr', default=5e-4, type=float, help='initial learning rate')
 parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
 parser.add_argument('--weight_decay', default=5e-5, type=float, help='initial weight decay')
-
-# parser.add_argument('--lr', default=0.003, type=float, help='initial learning rate')
-# parser.add_argument('--momentum', default=0.003, type=float, help='initial momentum')
-# parser.add_argument('--momentum', default=0.9, type=float, help='initial momentum')
-# parser.add_argument('--weight_decay', default=0.0003, type=float, help='initial weight decay')
-
 
 parser.add_argument('--batch_size', default=36, type=int, help='mini-batch size (default: 36)')
 parser.add_argument('--num_frames', default=29, type=int, help='mini-batch size (default: 36)')
