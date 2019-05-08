@@ -49,9 +49,9 @@ print_log(args, args.logfile)
 print_log('\n\nsaving to %s' % args.save_dir, log=args.logfile)
 
 print_log('creating the model\n\n', log=args.logfile)
-if args.modelname == 'C3D_CONV_BLSTM': model = C3D_CONV_BLSTM(args, input_dims=256, hidden_dims=256, num_lstm=2)
-elif args.modelname == 'C3D_CONV_BLSTM_frontfix': model = C3D_CONV_BLSTM(args, input_dims=256, hidden_dims=256, num_lstm=2)
-elif args.modelname == 'C3D_CONV_CONV': model = C3D_CONV_CONV(args, input_dims=256)
+if args.modelname == 'C3D_CONV_BLSTM': model = C3D_CONV_BLSTM(args)
+elif args.modelname == 'C3D_CONV_BLSTM_frontfix': model = C3D_CONV_BLSTM(args)
+elif args.modelname == 'C3D_CONV_CONV': model = C3D_CONV_CONV(args)
 elif args.modelname == 'I3D_BLSTM': model = I3D_BLSTM()
 elif args.modelname == 'I3D': model = I3D()
 

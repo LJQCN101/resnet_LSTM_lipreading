@@ -10,7 +10,7 @@ from .ConvBackend import ConvBackend
 from xinshuo_miscellaneous import print_log
 
 class C3D_CONV_CONV(nn.Module):
-    def __init__(self, args):
+    def __init__(self, args, input_dims=256):
         super(C3D_CONV_CONV, self).__init__()
         channel = args.channel
         print_log('channel is %d' % channel, log=args.logfile)

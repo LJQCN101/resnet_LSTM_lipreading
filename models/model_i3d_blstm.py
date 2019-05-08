@@ -81,7 +81,7 @@ class LSTMBackend(nn.Module):
 
 
 class I3D_BLSTM(nn.Module):
-    def __init__(self, inputDim=528, hiddenDim=1024, nClasses=500):
+    def __init__(self, inputDim=528, hiddenDim=256, num_lstm=2, nClasses=500):
         super(I3D_BLSTM, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
@@ -125,9 +125,8 @@ class I3D_BLSTM(nn.Module):
         self.inputDim = inputDim
         self.hiddenDim = hiddenDim
         self.nClasses = nClasses
-        self.nLayers = 2
-
-        self.lstm = LSTMBackend(self.inputDim, self.hiddenDim, self.nLayers, self.nClasses)
+        self.num_lstm = num_lstm
+        self.lstm = LSTMBackend(self.inputDim, self.hiddenDim, self.num_lstm, self.nClasses)
         # self.gru = GRU(self.inputDim, self.hiddenDim, self.nLayers, self.nClasses)
 
         self.validator = _validate
@@ -136,7 +135,7 @@ class I3D_BLSTM(nn.Module):
     def forward(self, x):
         # inputs:       batch_size x 3 x 29 x 112 x 112
         
-        out = self.conv3d_1a_7x7(x)           # batch_size x 64 x 14 x 56 x 56
+        out = self.conv3d_1a_7x7(x)             # batch_size x 64 x 14 x 56 x 56
         out = self.maxPool3d_2a_3x3(out)        # batch_size x 64 x 14 x 28 x 28
         out = self.conv3d_2b_1x1(out)           # batch_size x 64 x 14 x 28 x 28
         out = self.conv3d_2c_3x3(out)           # batch_size x 192 x 14 x 28 x 28
