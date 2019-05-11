@@ -11,18 +11,21 @@ class NLLSequenceLoss(nn.Module):
     Custom loss function.
     Returns a loss that is the sum of all losses at each time step.
     """
-    def __init__(self, num_frames):
+    def __init__(self):
         super(NLLSequenceLoss, self).__init__()
         self.criterion = nn.NLLLoss()
-        self.num_frames = num_frames
+        # self.num_frames = num_frame
 
     def forward(self, input, target):
+        # input         36 x 7 x 500
+
         loss = 0.0
-        transposed = input.transpose(0, 1).contiguous()
-        for i in range(0, self.num_frames):
+        transposed = input.transpose(0, 1).contiguous()         # 7 x 36 x 500
+        num_frames = transposed.size()[0]
+        for i in range(0, num_frames):
             loss += self.criterion(transposed[i], target)
 
-        return loss
+        return loss / num_frames
 
 def _validate(modelOutput, labels):
     # modelOutput               # num_batch x 29 x 500
@@ -42,15 +45,14 @@ class LSTMBackend(nn.Module):
         super(LSTMBackend, self).__init__()
         self.Module1 = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
 
-        input_dimen = 7
         self.fc = nn.Linear(hidden_size * 2, num_classes)
         self.softmax = nn.LogSoftmax(dim=2)
-        self.loss = NLLSequenceLoss(input_dimen)
+        self.loss = NLLSequenceLoss()
         self.validator = _validate
 
     def forward(self, input):
         # input: batch_size x 7 x 528
-        temporalDim = 1
+        # temporalDim = 1
         lstmOutput, _ = self.Module1(input)     # batch_size x 7 x 512
         output = self.fc(lstmOutput)            # batch_size x 7 x 500
         output = self.softmax(output)           # batch_size x 7 x 500
@@ -59,7 +61,7 @@ class LSTMBackend(nn.Module):
 
 class I3D_BLSTM_mini2(nn.Module):
     def __init__(self, inputDim=512, hiddenDim=256, num_lstm=2, nClasses=500):
-        super(I3D_BLSTM_mini, self).__init__()
+        super(I3D_BLSTM_mini2, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
         
