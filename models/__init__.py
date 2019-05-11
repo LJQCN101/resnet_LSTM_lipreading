@@ -8,3 +8,4 @@ from .model_i3d import I3D
 from .model_i3d_blstm import I3D_BLSTM
 from .model_i3d_blstm_mini import I3D_BLSTM_mini
 from .model_i3d_blstm_mini2 import I3D_BLSTM_mini2
+from .model_i3d_blstm_mini3 import I3D_BLSTM_mini3

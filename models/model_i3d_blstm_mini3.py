@@ -11,18 +11,22 @@ class NLLSequenceLoss(nn.Module):
     Custom loss function.
     Returns a loss that is the sum of all losses at each time step.
     """
-    def __init__(self, num_frames):
+    def __init__(self):
         super(NLLSequenceLoss, self).__init__()
         self.criterion = nn.NLLLoss()
-        self.num_frames = num_frames
+        # self.num_frames = num_frame
 
     def forward(self, input, target):
+        # input         36 x 14 x 500
+
         loss = 0.0
-        transposed = input.transpose(0, 1).contiguous()
-        for i in range(0, self.num_frames):
+        transposed = input.transpose(0, 1).contiguous()         # 14 x 36 x 500
+        num_frames = transposed.size()[0]
+        for i in range(0, num_frames):
             loss += self.criterion(transposed[i], target)
 
-        return loss
+        return loss / num_frames
+
 
 def _validate(modelOutput, labels):
     # modelOutput               # num_batch x 29 x 500
@@ -42,10 +46,10 @@ class LSTMBackend(nn.Module):
         super(LSTMBackend, self).__init__()
         self.Module1 = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
 
-        input_dimen = 14
+        # input_dimen = 14
         self.fc = nn.Linear(hidden_size * 2, num_classes)
         self.softmax = nn.LogSoftmax(dim=2)
-        self.loss = NLLSequenceLoss(input_dimen)
+        self.loss = NLLSequenceLoss()
         self.validator = _validate
 
     def forward(self, input):
@@ -57,9 +61,9 @@ class LSTMBackend(nn.Module):
         return output
 
 
-class I3D_BLSTM_mini(nn.Module):
+class I3D_BLSTM_mini3(nn.Module):
     def __init__(self, inputDim=256, hiddenDim=256, num_lstm=2, nClasses=500):
-        super(I3D_BLSTM_mini, self).__init__()
+        super(I3D_BLSTM_mini3, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
         
@@ -129,7 +133,7 @@ class I3D_BLSTM_mini(nn.Module):
         out = out.squeeze(3)                    # batch_size x 256 x 14 x 1
         out = out.squeeze(3)                    # batch_size x 256 x 14
 
-        out = out.transpose(1, 2)               # batch_size x 14 x 256
+        out = out.transpose(1, 2).contiguous()   # batch_size x 14 x 256
         out = self.lstm(out)                     # batch_size x 500   
         return out
 

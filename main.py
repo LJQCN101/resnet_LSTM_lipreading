@@ -3,7 +3,7 @@
 
 from __future__ import print_function
 import torch, toml, numpy as np, os, argparse, random, matplotlib; matplotlib.use('Agg')
-from models import C3D_CONV_BLSTM, C3D_CONV_CONV, I3D, I3D_BLSTM, I3D_BLSTM_mini, I3D_BLSTM_mini2
+from models import C3D_CONV_BLSTM, C3D_CONV_CONV, I3D, I3D_BLSTM, I3D_BLSTM_mini, I3D_BLSTM_mini2, I3D_BLSTM_mini3
 from training import Trainer
 from validation import Validator
 from utils import plot_loss, plot_accu, reload_model
@@ -56,6 +56,7 @@ elif args.modelname == 'I3D_BLSTM': model = I3D_BLSTM()
 elif args.modelname == 'I3D': model = I3D()
 elif args.modelname == 'I3D_BLSTM_mini': model = I3D_BLSTM_mini()
 elif args.modelname == 'I3D_BLSTM_mini2': model = I3D_BLSTM_mini2()
+elif args.modelname == 'I3D_BLSTM_mini3': model = I3D_BLSTM_mini3()
 
 print_log(model, log=args.logfile)
 model = reload_model(model, args.logfile, args.path)     # reload model
