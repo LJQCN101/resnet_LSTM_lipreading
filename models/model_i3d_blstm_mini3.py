@@ -42,7 +42,7 @@ class LSTMBackend(nn.Module):
         super(LSTMBackend, self).__init__()
         self.Module1 = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, bidirectional=True)
 
-        input_dimen = 7
+        input_dimen = 14
         self.fc = nn.Linear(hidden_size * 2, num_classes)
         self.softmax = nn.LogSoftmax(dim=2)
         self.loss = NLLSequenceLoss(input_dimen)
@@ -58,7 +58,7 @@ class LSTMBackend(nn.Module):
 
 
 class I3D_BLSTM_mini(nn.Module):
-    def __init__(self, inputDim=480, hiddenDim=256, num_lstm=2, nClasses=500):
+    def __init__(self, inputDim=256, hiddenDim=256, num_lstm=2, nClasses=500):
         super(I3D_BLSTM_mini, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
@@ -118,20 +118,18 @@ class I3D_BLSTM_mini(nn.Module):
         out = self.conv3d_2c_3x3(out)           # batch_size x 192 x 14 x 28 x 28
         out = self.maxPool3d_3a_3x3(out)        # batch_size x 192 x 14 x 14 x 14
         out = self.mixed_3b(out)                # batch_size x 256 x 14 x 14 x 14     
-        out = self.mixed_3c(out)                # batch_size x 480 x 14 x 14 x 14
+        # out = self.mixed_3c(out)                # batch_size x 480 x 14 x 14 x 14
         # out = self.maxPool3d_4a_3x3(out)        # batch_size x 480 x 7 x 7 x 7
         # out = self.mixed_4b(out)                # batch_size x 512 x 7 x 7 x 7
         # out = self.mixed_4c(out)                # batch_size x 512 x 7 x 7 x 7
         # out = self.mixed_4d(out)                # batch_size x 512 x 7 x 7 x 7
         # out = self.mixed_4e(out)                # batch_size x 528 x 7 x 7 x 7
-        out = self.avg_pool(out)                # batch_size x 528 x 14 x 1 x 1
-        print(out.size())
-        zxc
+        out = self.avg_pool(out)                # batch_size x 256 x 14 x 1 x 1
+        
+        out = out.squeeze(3)                    # batch_size x 256 x 14 x 1
+        out = out.squeeze(3)                    # batch_size x 256 x 14
 
-        out = out.squeeze(3)                    # batch_size x 528 x 14 x 1
-        out = out.squeeze(3)                    # batch_size x 528 x 14
-
-        out = out.transpose(1, 2)               # batch_size x 14 x 528
+        out = out.transpose(1, 2)               # batch_size x 14 x 256
         out = self.lstm(out)                     # batch_size x 500   
         return out
 

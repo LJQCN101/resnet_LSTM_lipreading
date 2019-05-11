@@ -59,7 +59,7 @@ class LSTMBackend(nn.Module):
 
 class I3D_BLSTM_mini2(nn.Module):
     def __init__(self, inputDim=512, hiddenDim=256, num_lstm=2, nClasses=500):
-        super(I3D_BLSTM_mini2, self).__init__()
+        super(I3D_BLSTM_mini, self).__init__()
         in_channels = 1
         self.loss_history_train, self.loss_history_val = [], []
         
