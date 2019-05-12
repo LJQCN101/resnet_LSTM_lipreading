@@ -25,7 +25,7 @@ class NLLSequenceLoss(nn.Module):
         for i in range(0, num_frames):
             loss += self.criterion(transposed[i], target)
 
-        return loss / num_frames
+        return loss
 
 def _validate(modelOutput, labels):
     # modelOutput               # num_batch x 29 x 500
