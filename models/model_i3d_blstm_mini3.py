@@ -25,12 +25,13 @@ class NLLSequenceLoss(nn.Module):
         for i in range(0, num_frames):
             loss += self.criterion(transposed[i], target)
 
-        print(loss)
-        print(type(loss))
-        print(type(num_frames))
-        print(num_frames)
-        zxc
-        return loss / num_frames
+        # print(loss)
+        # print(type(loss))
+        # print(type(num_frames))
+        # print(num_frames)
+        # zxc
+        # return loss / num_frames
+        return loss
 
 
 def _validate(modelOutput, labels):
